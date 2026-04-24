@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learn Tosca - Step by Step Guide</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a5f, #0ea5e9);
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #bae6fd;
+      font-size: 1.1rem;
+      margin-top: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #0ea5e9;
+      color: #fff;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      background: #1e293b;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid #0ea5e9;
+    }
+
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    nav a:hover {
+      background: #0ea5e9;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .progress-bar-container {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      border: 1px solid #334155;
+    }
+
+    .progress-bar-container h2 {
+      color: #0ea5e9;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+    }
+
+    .stages-track {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .stages-track::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #334155;
+      z-index: 0;
+    }
+
+    .stage-dot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .stage-dot .dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #334155;
+      border: 3px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .stage-dot.active .dot {
+      background: #0ea5e9;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 12px #0ea5e9;
+      color: #fff;
+    }
+
+    .stage-dot.done .dot {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #fff;
+    }
+
+    .stage-dot span {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-align: center;
+      max-width: 70px;
+    }
+
+    .stage-dot.active span { color: #0ea5e9; }
+    .stage-dot.done span { color: #22c55e; }
+
+    .section {
+      margin-bottom: 50px;
+      scroll-margin-top: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stage-number {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(14,165,233,0.4);
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      color: #f1f5f9;
+    }
+
+    .week-badge {
+      background: #1e3a5f;
+      color: #7dd3fc;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      border: 1px solid #0ea5e9;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #0ea5e9, #6366f1);
+    }
+
+    .card:hover {
+      border-color: #0ea5e9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(14,165,233,0.15);
+    }
+
+    .card h3 {
+      color: #7dd3fc;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .card ul li {
+      padding: 5px 0;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #263344;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .card ul li:last-child { border-bottom: none; }
+
+    .card ul li::before {
+      content: '▸';
+      color: #0ea5e9;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .code-block {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: #86efac;
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    .code-block .comment { color: #64748b; }
+    .code-block .keyword { color: #c084fc; }
+    .code-block .string { color: #fbbf24; }
+
+    .tip-box {
+      background: #1a2e1a;
+      border: 1px solid #22c55e;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      color: #86efac;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .tip-box .icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .warning-box {
+      background: #2d1b00;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      color: #fcd34d;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .resources-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+
+    .resources-table th {
+      background: #0f2744;
+      color: #7dd3fc;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .resources-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #334155;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .resources-table tr:last-child td { border-bottom: none; }
+    .resources-table tr:hover td { background: #263344; }
+
+    .resources-table .tag {
+      background: #1e3a5f;
+      color: #7dd3fc;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    .quiz-section {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 28px;
+      margin-top: 40px;
+    }
+
+    .quiz-section h2 {
+      color: #0ea5e9;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .quiz-question {
+      margin-bottom: 24px;
+    }
+
+    .quiz-question p {
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .quiz-option:hover { border-color: #0ea5e9; color: #e2e8f0; }
+    .quiz-option.correct { background: #1a2e1a; border-color: #22c55e; color: #86efac; }
+    .quiz-option.wrong { background: #2d1b1b; border-color: #ef4444; color: #fca5a5; }
+
+    .cert-path {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .cert-card {
+      flex: 1;
+      min-width: 200px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .cert-card:hover {
+      border-color: #6366f1;
+      box-shadow: 0 8px 24px rgba(99,102,241,0.2);
+    }
+
+    .cert-card .cert-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .cert-card h3 { color: #a5b4fc; font-size: 1rem; }
+    .cert-card p { color: #64748b; font-size: 0.8rem; margin-top: 6px; }
+
+    .cert-level {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-top: 8px;
+    }
+
+    .level-beginner { background: #1a2e1a; color: #86efac; }
+    .level-inter { background: #1e2e3a; color: #7dd3fc; }
+    .level-adv { background: #2d1f3a; color: #c084fc; }
+
+    footer {
+      background: #1e293b;
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      border-top: 1px solid #334155;
+      font-size: 0.85rem;
+    }
+
+    footer span { color: #0ea5e9; }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #263344;
+      cursor: pointer;
+    }
+
+    .checklist-item:last-child { border-bottom: none; }
+
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0ea5e9;
+      cursor: pointer;
+    }
+
+    .checklist-item label {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .checklist-item input:checked + label {
+      color: #22c55e;
+      text-decoration: line-through;
+      text-decoration-color: #22c55e;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      .stages-track { gap: 4px; }
+      .stage-dot span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Learn Tricentis Tosca</h1>
+  <p>A complete step-by-step guide for QA Engineers</p>
+  <span class="badge">12-Week Learning Path</span>
+</header>
+
+<nav>
+  <a href="#stage1">Stage 1: Basics</a>
+  <a href="#stage2">Stage 2: Core Skills</a>
+  <a href="#stage3">Stage 3: Test Data</a>
+  <a href="#stage4">Stage 4: Advanced</a>
+  <a href="#stage5">Stage 5: API Testing</a>
+  <a href="#stage6">Stage 6: CI/CD</a>
+  <a href="#quiz">Quick Quiz</a>
+  <a href="#resources">Resources</a>
+  <a href="#cert">Certification</a>
+</nav>
+
+<div class="container">
+
+  <!-- Progress Tracker -->
+  <div class="progress-bar-container">
+    <h2>Your Learning Progress</h2>
+    <div class="stages-track">
+      <div class="stage-dot active" onclick="setActive(this, 1)">
+        <div class="dot">1</div>
+        <span>Foundations</span>
+      </div>
+      <div class="stage-dot" onclick="setActive(this, 2)">
+        <div class="dot">2</div>
+        <span>Core Skills</span>
+      </div>
+      <div class="stage-dot" onclick="setActive(this, 3)">
+        <div class="dot">3</div>
+        <span>Test Data</span>
+      </div>
+      <div class="stage-dot" onclick="setActive(this, 4)">
+        <div class="dot">4</div>
+        <span>Advanced</span>
+      </div>
+      <div class="stage-dot" onclick="setActive(this, 5)">
+        <div class="dot">5</div>
+        <span>API Testing</span>
+      </div>
+      <div class="stage-dot" onclick="setActive(this, 6)">
+        <div class="dot">6</div>
+        <span>CI/CD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 1 -->
+  <div class="section" id="stage1">
+    <div class="section-header">
+      <div class="stage-number">1</div>
+      <div>
+        <h2>Foundations &amp; Setup</h2>
+        <span class="week-badge">Week 1 - 2</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>What is Tosca?</h3>
+        <ul>
+          <li>Model-based test automation tool by Tricentis</li>
+          <li>No-code / low-code approach</li>
+          <li>Supports web, desktop, mobile, API, SAP</li>
+          <li>Integrated with CI/CD pipelines</li>
+          <li>Used by enterprise QA teams globally</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Tosca vs Other Tools</h3>
+        <ul>
+          <li>vs Selenium: No scripting needed in Tosca</li>
+          <li>vs UFT/QTP: Better model-based reuse</li>
+          <li>vs Cypress: Tosca covers more app types</li>
+          <li>vs Manual: Much faster regression cycles</li>
+          <li>Best for: Enterprise + SAP + Salesforce QA</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Core Concepts</h3>
+        <ul>
+          <li>Modules — scanned UI element definitions</li>
+          <li>TestCases — sequence of test steps</li>
+          <li>TestSuites — grouped test cases</li>
+          <li>Execution Lists — run configurations</li>
+          <li>Workspace — your project container</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Setup Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c1"><label for="c1">Download Tosca Commander (trial)</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c2"><label for="c2">Install and activate license</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c3"><label for="c3">Create a new workspace</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c4"><label for="c4">Explore the UI layout</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">Open Tricentis demo app</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="icon">💡</span>
+      <span><strong>Tip:</strong> Use the Tricentis demo app "Demowebshop" (available for free) to practice all scanning and test building exercises.</span>
+    </div>
+  </div>
+
+  <!-- Stage 2 -->
+  <div class="section" id="stage2">
+    <div class="section-header">
+      <div class="stage-number">2</div>
+      <div>
+        <h2>Core Skills — Scanning &amp; Test Cases</h2>
+        <span class="week-badge">Week 3 - 4</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Scanning Applications</h3>
+        <ul>
+          <li>Open TBox Scan to scan web elements</li>
+          <li>Scan buttons, fields, dropdowns, tables</li>
+          <li>Review and clean up scanned modules</li>
+          <li>Understand steering properties</li>
+          <li>Re-scan when UI changes</li>
+        </ul>
+        <div class="code-block">
+          <span class="comment">// TBox Scan Steps</span><br>
+          1. Open Tosca Commander<br>
+          2. Right-click Modules folder<br>
+          3. Select "Scan Application"<br>
+          4. Highlight the UI element<br>
+          5. Click "Scan Selected"
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Building Test Cases</h3>
+        <ul>
+          <li>Drag modules into a TestCase</li>
+          <li>Add TestSteps from module attributes</li>
+          <li>Set ActionMode for each step</li>
+          <li>Add expected values for verification</li>
+          <li>Run and observe results</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>ActionMode Types</h3>
+        <ul>
+          <li><strong style="color:#7dd3fc">Input</strong> — type text into a field</li>
+          <li><strong style="color:#7dd3fc">Verify</strong> — assert a value is correct</li>
+          <li><strong style="color:#7dd3fc">Select</strong> — pick from a dropdown</li>
+          <li><strong style="color:#7dd3fc">Click</strong> — click a button/link</li>
+          <li><strong style="color:#7dd3fc">WaitOn</strong> — wait for element to appear</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Stage 2 Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c6"><label for="c6">Scan a login form</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c7"><label for="c7">Create a login TestCase</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c8"><label for="c8">Add verify steps</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c9"><label for="c9">Run and pass the test</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c10"><label for="c10">Debug a failing step</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 3 -->
+  <div class="section" id="stage3">
+    <div class="section-header">
+      <div class="stage-number">3</div>
+      <div>
+        <h2>Test Data &amp; Parameters</h2>
+        <span class="week-badge">Week 5 - 6</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>TestCase Design (TCD)</h3>
+        <ul>
+          <li>Separate test logic from test data</li>
+          <li>Create equivalence classes</li>
+          <li>Define representative values</li>
+          <li>Auto-generate test case combinations</li>
+          <li>Reduce manual data management</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Buffers</h3>
+        <ul>
+          <li>Store runtime values between steps</li>
+          <li>Use {BUFFER[name]} syntax to reference</li>
+          <li>Read values from UI and store them</li>
+          <li>Pass data across TestSteps</li>
+          <li>Great for dynamic IDs and timestamps</li>
+        </ul>
+        <div class="code-block">
+          <span class="comment">// Buffer example</span><br>
+          <span class="keyword">ActionMode:</span> <span class="string">ReadBuffer</span><br>
+          <span class="keyword">Buffer Name:</span> OrderID<br>
+          <span class="keyword">Value:</span> {BUFFER[OrderID]}
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Business Parameters</h3>
+        <ul>
+          <li>Reusable parameters across test cases</li>
+          <li>Centralize environment-specific values</li>
+          <li>URL, username, password management</li>
+          <li>Switch between test environments easily</li>
+          <li>Stored in Parameter Sets</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Stage 3 Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c11"><label for="c11">Create a TCD with 3+ values</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c12"><label for="c12">Use a buffer to pass an order ID</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c13"><label for="c13">Set up Business Parameters</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c14"><label for="c14">Run data-driven test cases</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <span class="icon">⚠️</span>
+      <span><strong>Common Mistake:</strong> Don't hardcode URLs or credentials in TestSteps. Always use Business Parameters so tests are environment-portable.</span>
+    </div>
+  </div>
+
+  <!-- Stage 4 -->
+  <div class="section" id="stage4">
+    <div class="section-header">
+      <div class="stage-number">4</div>
+      <div>
+        <h2>Advanced Features</h2>
+        <span class="week-badge">Week 7 - 8</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Libraries (Reusable TestCases)</h3>
+        <ul>
+          <li>Create reusable login / logout flows</li>
+          <li>Call library steps from any TestCase</li>
+          <li>Parameters make them flexible</li>
+          <li>Reduces duplication across test suites</li>
+          <li>Update once, fix everywhere</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Recovery Scenarios</h3>
+        <ul>
+          <li>Handle unexpected popups/dialogs</li>
+          <li>Auto-dismiss cookie banners</li>
+          <li>Recover from timeout errors</li>
+          <li>Keep tests running in CI pipelines</li>
+          <li>Define cleanup steps on failure</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Conditions &amp; Logic</h3>
+        <ul>
+          <li>If/Else branching in test steps</li>
+          <li>Skip steps based on conditions</li>
+          <li>Loop over repeating actions</li>
+          <li>Combine with buffers for dynamic flows</li>
+          <li>Validate optional UI elements</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Stage 4 Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c15"><label for="c15">Create a reusable login library</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c16"><label for="c16">Add a recovery scenario</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c17"><label for="c17">Build an If/Else condition</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c18"><label for="c18">Refactor a TestSuite using libraries</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 5 -->
+  <div class="section" id="stage5">
+    <div class="section-header">
+      <div class="stage-number">5</div>
+      <div>
+        <h2>API Testing</h2>
+        <span class="week-badge">Week 9 - 10</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>API Test Setup</h3>
+        <ul>
+          <li>Use Tosca API Scan to import endpoints</li>
+          <li>Supports REST and SOAP APIs</li>
+          <li>Import from Swagger/OpenAPI specs</li>
+          <li>Set headers, auth tokens, base URLs</li>
+          <li>Parameterize requests with buffers</li>
+        </ul>
+        <div class="code-block">
+          <span class="comment">// REST request example</span><br>
+          <span class="keyword">Method:</span> POST<br>
+          <span class="keyword">Endpoint:</span> /api/v1/accounts<br>
+          <span class="keyword">Body:</span> {<span class="string">"name"</span>: {BP[AccName]}}<br>
+          <span class="keyword">Verify:</span> status == 201
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Response Verification</h3>
+        <ul>
+          <li>Verify HTTP status codes</li>
+          <li>Extract JSON response values</li>
+          <li>Store response data in buffers</li>
+          <li>Chain API calls (get ID, then use it)</li>
+          <li>Validate response schema</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>UI + API Combined</h3>
+        <ul>
+          <li>Create a record via API, verify in UI</li>
+          <li>Submit a form in UI, verify via API</li>
+          <li>Use API for test data setup/teardown</li>
+          <li>Faster and more stable than UI-only tests</li>
+          <li>Ideal for Salesforce end-to-end flows</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Stage 5 Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c19"><label for="c19">Scan a REST API endpoint</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c20"><label for="c20">Create an API TestCase</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c21"><label for="c21">Verify status code + response body</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c22"><label for="c22">Chain 2 API calls with buffers</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c23"><label for="c23">Build a UI + API hybrid test</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 6 -->
+  <div class="section" id="stage6">
+    <div class="section-header">
+      <div class="stage-number">6</div>
+      <div>
+        <h2>Execution, CI/CD &amp; Reporting</h2>
+        <span class="week-badge">Week 11 - 12</span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Execution Lists</h3>
+        <ul>
+          <li>Organize TestCases into run lists</li>
+          <li>Set execution order and grouping</li>
+          <li>Configure parallel execution agents</li>
+          <li>Schedule automated runs</li>
+          <li>Filter by tags or attributes</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>CI/CD Integration</h3>
+        <ul>
+          <li>Tosca CI plugin for Jenkins</li>
+          <li>Azure DevOps task available</li>
+          <li>Trigger runs via command line (TCShell)</li>
+          <li>Pass results back to CI pipeline</li>
+          <li>Gate deployments on test pass rate</li>
+        </ul>
+        <div class="code-block">
+          <span class="comment">// TCShell command</span><br>
+          TCShell.exe<br>
+          &nbsp;-workspace "C:\Tosca\WS"<br>
+          &nbsp;-executionlist "Regression"<br>
+          &nbsp;-result "results.xml"
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Reporting &amp; Logs</h3>
+        <ul>
+          <li>View pass/fail in Execution Log</li>
+          <li>Screenshot capture on failure</li>
+          <li>Export reports to PDF/HTML</li>
+          <li>Tosca Dashboard for trends</li>
+          <li>Integrate with Jira for defects</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Stage 6 Checklist</h3>
+        <div style="padding-top:8px">
+          <div class="checklist-item"><input type="checkbox" id="c24"><label for="c24">Build an Execution List</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c25"><label for="c25">Run tests and review logs</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c26"><label for="c26">Export a test report</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c27"><label for="c27">Trigger tests via TCShell</label></div>
+          <div class="checklist-item"><input type="checkbox" id="c28"><label for="c28">Connect to Jenkins or Azure DevOps</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-section" id="quiz">
+    <h2>Quick Knowledge Quiz</h2>
+
+    <div class="quiz-question">
+      <p>1. What does Tosca use to define reusable UI element definitions?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A. Scripts</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">B. Modules</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">C. Locators</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">D. Selectors</button>
+      </div>
+    </div>
+
+    <div class="quiz-question">
+      <p>2. Which ActionMode would you use to assert a page title is correct?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A. Input</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">B. Click</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">C. Verify</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">D. Select</button>
+      </div>
+    </div>
+
+    <div class="quiz-question">
+      <p>3. What Tosca feature allows you to store a value captured at runtime for use in a later step?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A. Business Parameter</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">B. Library</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">C. Buffer</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">D. Execution List</button>
+      </div>
+    </div>
+
+    <div class="quiz-question">
+      <p>4. What is the purpose of TestCase Design (TCD)?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A. Scan UI elements</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">B. Separate test logic from test data for data-driven testing</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">C. Create CI pipeline jobs</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">D. Record browser actions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="section" id="resources" style="margin-top:50px">
+    <div class="section-header">
+      <div class="stage-number" style="background:linear-gradient(135deg,#6366f1,#a78bfa)">R</div>
+      <div><h2>Learning Resources</h2></div>
+    </div>
+
+    <table class="resources-table">
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>What You'll Learn</th>
+          <th>Type</th>
+          <th>Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tricentis Academy</td>
+          <td>Official Tosca courses, hands-on labs</td>
+          <td><span class="tag">Course</span></td>
+          <td>Free tier available</td>
+        </tr>
+        <tr>
+          <td>Tricentis Documentation</td>
+          <td>Full product reference, tutorials</td>
+          <td><span class="tag">Docs</span></td>
+          <td>Free</td>
+        </tr>
+        <tr>
+          <td>Demowebshop App</td>
+          <td>Practice scanning and test building</td>
+          <td><span class="tag">Practice App</span></td>
+          <td>Free</td>
+        </tr>
+        <tr>
+          <td>Tosca AS1 Certification</td>
+          <td>Associate-level Tosca automation skills</td>
+          <td><span class="tag">Certification</span></td>
+          <td>Paid exam</td>
+        </tr>
+        <tr>
+          <td>Tosca AS2 Certification</td>
+          <td>Professional-level skills + advanced topics</td>
+          <td><span class="tag">Certification</span></td>
+          <td>Paid exam</td>
+        </tr>
+        <tr>
+          <td>YouTube: Tosca Tutorials</td>
+          <td>Video walkthroughs for visual learners</td>
+          <td><span class="tag">Video</span></td>
+          <td>Free</td>
+        </tr>
+        <tr>
+          <td>Tricentis Community Forum</td>
+          <td>Q&amp;A, tips, real-world use cases</td>
+          <td><span class="tag">Community</span></td>
+          <td>Free</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Certification -->
+  <div class="section" id="cert">
+    <div class="section-header">
+      <div class="stage-number" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">C</div>
+      <div><h2>Certification Path</h2></div>
+    </div>
+
+    <div class="cert-path">
+      <div class="cert-card">
+        <div class="cert-icon">🎓</div>
+        <h3>Tosca AS1</h3>
+        <p>Associate Level — Core automation, scanning, test cases, basic execution</p>
+        <span class="cert-level level-beginner">Beginner</span>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🏅</div>
+        <h3>Tosca AS2</h3>
+        <p>Professional Level — TCD, libraries, recovery scenarios, API testing</p>
+        <span class="cert-level level-inter">Intermediate</span>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🏆</div>
+        <h3>Tosca AS3</h3>
+        <p>Expert Level — CI/CD, architecture, distributed agents, customization</p>
+        <span class="cert-level level-adv">Advanced</span>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:24px">
+      <span class="icon">🚀</span>
+      <span><strong>Salesforce QA Tip:</strong> After AS1, focus on Tosca's Salesforce connector. It pre-scans standard Salesforce objects and Lightning components — a huge time saver for your QA work!</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Built for <span>Salesforce QA Engineers</span> learning Tricentis Tosca &nbsp;|&nbsp; 12-Week Learning Path
+</footer>
+
+<script>
+  function checkAnswer(btn, isCorrect) {
+    const options = btn.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(o => o.disabled = true);
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.textContent += '  ✓ Correct!';
+    } else {
+      btn.classList.add('wrong');
+      btn.textContent += '  ✗ Wrong';
+      options.forEach(o => {
+        if (o !== btn) {
+          o.style.opacity = '0.4';
+        }
+      });
+    }
+  }
+
+  function setActive(el, num) {
+    const dots = document.querySelectorAll('.stage-dot');
+    dots.forEach((d, i) => {
+      if (i < num - 1) {
+        d.className = 'stage-dot done';
+      } else if (i === num - 1) {
+        d.className = 'stage-dot active';
+      } else {
+        d.className = 'stage-dot';
+      }
+    });
+    const target = document.getElementById('stage' + num);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
