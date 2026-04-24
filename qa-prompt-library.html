@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QA Prompt Library — Test Case Creation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #161b22, #1f6feb22);
+      border-bottom: 1px solid #30363d;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      color: #58a6ff;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: #8b949e;
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    .ai-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .ai-badge {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 0.78rem;
+      color: #8b949e;
+    }
+
+    .ai-badge.active { border-color: #58a6ff; color: #58a6ff; }
+
+    /* SEARCH & FILTER */
+    .toolbar {
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-box {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: #c9d1d9;
+      font-size: 0.9rem;
+      width: 280px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus { border-color: #58a6ff; }
+    .search-box::placeholder { color: #484f58; }
+
+    .filter-btn {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 6px 16px;
+      color: #8b949e;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: #fff;
+    }
+
+    /* STATS */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 16px 20px;
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat .num { font-size: 1.5rem; font-weight: bold; color: #58a6ff; }
+    .stat .label { font-size: 0.75rem; color: #484f58; }
+
+    /* MAIN LAYOUT */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* CATEGORY HEADER */
+    .category-section {
+      margin-bottom: 50px;
+      scroll-margin-top: 80px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #21262d;
+    }
+
+    .category-icon { font-size: 1.6rem; }
+
+    .category-header h2 {
+      color: #f0f6fc;
+      font-size: 1.3rem;
+    }
+
+    .category-count {
+      background: #1f6feb22;
+      border: 1px solid #1f6feb44;
+      color: #58a6ff;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
+
+    /* PROMPT CARDS */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .prompt-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prompt-card:hover {
+      border-color: #58a6ff;
+      box-shadow: 0 4px 20px rgba(88,166,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid #21262d;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .card-title {
+      color: #f0f6fc;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .tag-web { background: #1f3a5f; color: #79c0ff; }
+    .tag-api { background: #1f3a2f; color: #56d364; }
+    .tag-mobile { background: #3a1f5f; color: #d2a8ff; }
+    .tag-db { background: #3a2a1f; color: #ffa657; }
+    .tag-sf { background: #1a2f4a; color: #58a6ff; }
+    .tag-regression { background: #3a1f1f; color: #ff7b72; }
+    .tag-perf { background: #2a3a1f; color: #7ee787; }
+    .tag-security { background: #2d1f3a; color: #c084fc; }
+    .tag-smoke { background: #1f3a3a; color: #39d3f5; }
+    .tag-uat { background: #3a3a1f; color: #e3b341; }
+
+    .difficulty {
+      font-size: 0.7rem;
+      padding: 2px 10px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .diff-basic { background: #1f3a2f; color: #56d364; }
+    .diff-intermediate { background: #3a2a1f; color: #ffa657; }
+    .diff-advanced { background: #3a1f1f; color: #ff7b72; }
+
+    .prompt-body {
+      padding: 14px 18px;
+      flex: 1;
+    }
+
+    .prompt-text {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 80px;
+    }
+
+    .prompt-text .placeholder {
+      color: #58a6ff;
+      background: #1f6feb22;
+      border-radius: 4px;
+      padding: 1px 4px;
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #21262d;
+      gap: 8px;
+    }
+
+    .copy-btn {
+      background: #1f6feb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 16px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover { background: #388bfd; }
+    .copy-btn.copied { background: #238636; }
+
+    .fav-btn {
+      background: none;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #484f58;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .fav-btn:hover { border-color: #e3b341; color: #e3b341; }
+    .fav-btn.active { border-color: #e3b341; color: #e3b341; background: #2d2a1f; }
+
+    .use-count {
+      font-size: 0.75rem;
+      color: #484f58;
+    }
+
+    /* TEMPLATE BUILDER */
+    .builder-section {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 40px;
+    }
+
+    .builder-section h2 {
+      color: #58a6ff;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .builder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .builder-field label {
+      display: block;
+      color: #8b949e;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .builder-field input,
+    .builder-field select,
+    .builder-field textarea {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #c9d1d9;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .builder-field textarea { resize: vertical; min-height: 70px; }
+
+    .builder-field input:focus,
+    .builder-field select:focus,
+    .builder-field textarea:focus { border-color: #58a6ff; }
+
+    .builder-field select option { background: #161b22; }
+
+    .generated-prompt {
+      background: #0d1117;
+      border: 1px solid #238636;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.88rem;
+      color: #c9d1d9;
+      line-height: 1.8;
+      min-height: 100px;
+      white-space: pre-wrap;
+      margin-bottom: 14px;
+    }
+
+    .generate-btn {
+      background: linear-gradient(135deg, #238636, #2ea043);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .generate-btn:hover { transform: scale(1.03); box-shadow: 0 4px 16px rgba(35,134,54,0.3); }
+
+    /* CHEAT SHEET */
+    .cheatsheet {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .cheatsheet-header {
+      background: #1f2937;
+      padding: 16px 24px;
+      color: #f0f6fc;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cheatsheet-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      border-bottom: 1px solid #21262d;
+      transition: background 0.2s;
+    }
+
+    .cheatsheet-row:hover { background: #1c2128; }
+    .cheatsheet-row:last-child { border-bottom: none; }
+
+    .cs-label {
+      padding: 12px 20px;
+      color: #58a6ff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-right: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+    }
+
+    .cs-value {
+      padding: 12px 20px;
+      color: #c9d1d9;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cs-copy {
+      background: none;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      color: #484f58;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .cs-copy:hover { border-color: #58a6ff; color: #58a6ff; }
+
+    /* TIPS */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .tip-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .tip-card .tip-icon { font-size: 1.5rem; margin-bottom: 10px; }
+    .tip-card h4 { color: #f0f6fc; font-size: 0.95rem; margin-bottom: 8px; }
+    .tip-card p { color: #8b949e; font-size: 0.85rem; line-height: 1.6; }
+
+    /* SECTION DIVIDER */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 40px 0 30px;
+    }
+
+    .section-divider h2 {
+      color: #f0f6fc;
+      font-size: 1.4rem;
+      white-space: nowrap;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, #30363d, transparent);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #238636;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    footer {
+      background: #161b22;
+      text-align: center;
+      padding: 30px;
+      color: #484f58;
+      border-top: 1px solid #21262d;
+      font-size: 0.85rem;
+    }
+
+    footer span { color: #58a6ff; }
+
+    /* NO RESULTS */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #484f58;
+      display: none;
+    }
+
+    .no-results .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.6rem; }
+      .prompts-grid { grid-template-columns: 1fr; }
+      .cheatsheet-row { grid-template-columns: 1fr; }
+      .cs-label { border-right: none; border-bottom: 1px solid #21262d; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>QA Prompt Library</h1>
+  <p>Ready-to-use prompts for test case creation — works with any AI tool</p>
+  <div class="ai-badges">
+    <span class="ai-badge active">Claude</span>
+    <span class="ai-badge active">ChatGPT</span>
+    <span class="ai-badge active">Gemini</span>
+    <span class="ai-badge active">Copilot</span>
+    <span class="ai-badge active">Perplexity</span>
+    <span class="ai-badge active">Any AI Tool</span>
+  </div>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <input class="search-box" type="text" placeholder="Search prompts..." oninput="filterPrompts(this.value)" id="searchBox"/>
+  <button class="filter-btn active" onclick="filterByTag('all', this)">All</button>
+  <button class="filter-btn" onclick="filterByTag('web', this)">Web</button>
+  <button class="filter-btn" onclick="filterByTag('api', this)">API</button>
+  <button class="filter-btn" onclick="filterByTag('mobile', this)">Mobile</button>
+  <button class="filter-btn" onclick="filterByTag('sf', this)">Salesforce</button>
+  <button class="filter-btn" onclick="filterByTag('regression', this)">Regression</button>
+  <button class="filter-btn" onclick="filterByTag('security', this)">Security</button>
+  <button class="filter-btn" onclick="showFavorites(this)">Favorites ★</button>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="num" id="totalCount">50</div><div class="label">Total Prompts</div></div>
+  <div class="stat"><div class="num" id="catCount">10</div><div class="label">Categories</div></div>
+  <div class="stat"><div class="num" id="favCount">0</div><div class="label">Favorites</div></div>
+  <div class="stat"><div class="num" id="copyCount">0</div><div class="label">Copied Today</div></div>
+</div>
+
+<div class="container">
+
+  <!-- PROMPT BUILDER -->
+  <div class="builder-section">
+    <h2>⚡ Custom Prompt Builder</h2>
+    <div class="builder-grid">
+      <div class="builder-field">
+        <label>FEATURE / MODULE NAME</label>
+        <input type="text" id="b_feature" placeholder="e.g. Login Page, Payment Flow"/>
+      </div>
+      <div class="builder-field">
+        <label>APPLICATION TYPE</label>
+        <select id="b_app">
+          <option value="web application">Web Application</option>
+          <option value="mobile app">Mobile App</option>
+          <option value="REST API">REST API</option>
+          <option value="Salesforce org">Salesforce Org</option>
+          <option value="desktop application">Desktop Application</option>
+          <option value="e-commerce platform">E-Commerce Platform</option>
+        </select>
+      </div>
+      <div class="builder-field">
+        <label>TEST TYPE</label>
+        <select id="b_type">
+          <option value="functional test cases">Functional Test Cases</option>
+          <option value="regression test cases">Regression Test Cases</option>
+          <option value="smoke test cases">Smoke Test Cases</option>
+          <option value="negative test cases">Negative Test Cases</option>
+          <option value="boundary value test cases">Boundary Value Test Cases</option>
+          <option value="end-to-end test scenarios">End-to-End Test Scenarios</option>
+          <option value="UAT test cases">UAT Test Cases</option>
+          <option value="API test cases">API Test Cases</option>
+          <option value="security test cases">Security Test Cases</option>
+          <option value="performance test cases">Performance Test Cases</option>
+        </select>
+      </div>
+      <div class="builder-field">
+        <label>OUTPUT FORMAT</label>
+        <select id="b_format">
+          <option value="a table with columns: Test ID, Test Case Title, Preconditions, Test Steps, Expected Result, Priority">Table Format</option>
+          <option value="BDD Gherkin format (Given/When/Then)">BDD / Gherkin</option>
+          <option value="a numbered list with steps and expected results">Numbered List</option>
+          <option value="a JSON array">JSON Format</option>
+          <option value="an Excel-ready CSV format">CSV Format</option>
+        </select>
+      </div>
+      <div class="builder-field">
+        <label>PRIORITY FOCUS (optional)</label>
+        <input type="text" id="b_focus" placeholder="e.g. edge cases, security, performance"/>
+      </div>
+      <div class="builder-field">
+        <label>NUMBER OF TEST CASES</label>
+        <select id="b_count">
+          <option value="5">5 test cases</option>
+          <option value="10" selected>10 test cases</option>
+          <option value="15">15 test cases</option>
+          <option value="20">20 test cases</option>
+          <option value="as many as needed">As many as needed</option>
+        </select>
+      </div>
+    </div>
+    <div class="builder-field" style="margin-bottom:16px">
+      <label>ADDITIONAL CONTEXT (optional)</label>
+      <textarea id="b_context" placeholder="e.g. The login supports SSO, OTP via email, and Google OAuth. Users can be Admin or Standard role."></textarea>
+    </div>
+    <button class="generate-btn" onclick="buildPrompt()">Generate Custom Prompt ⚡</button>
+    <br/><br/>
+    <div class="generated-prompt" id="generatedPrompt">Your generated prompt will appear here...</div>
+    <button class="copy-btn" onclick="copyGenerated(this)" style="margin-top:4px">📋 Copy Prompt</button>
+  </div>
+
+  <!-- PROMPTS START -->
+  <div id="promptsContainer">
+
+  <!-- CATEGORY 1: FUNCTIONAL -->
+  <div class="category-section" data-category="functional">
+    <div class="category-header">
+      <span class="category-icon">🧪</span>
+      <h2>Functional Test Cases</h2>
+      <span class="category-count">8 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Basic Functional Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate functional test cases for the <span class="placeholder">[feature name]</span> feature of a <span class="placeholder">[application type]</span>. Include test case ID, title, preconditions, test steps, expected result, and priority. Cover happy path, alternate flows, and basic negative scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 124 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">User Story to Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Convert the following user story into detailed test cases:
+
+User Story: <span class="placeholder">[paste user story here]</span>
+
+Create test cases in a table format covering: acceptance criteria validation, positive scenarios, negative scenarios, and edge cases. Include priority (High/Medium/Low) for each.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 98 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Login / Authentication Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create comprehensive test cases for a login/authentication module with the following features: <span class="placeholder">[e.g. email+password, SSO, OTP, Google login]</span>.
+
+Cover: valid login, invalid credentials, locked accounts, password rules, session management, remember me, and logout scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 87 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Form Validation Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate test cases for form validation on the <span class="placeholder">[form name]</span> form. Fields: <span class="placeholder">[list fields and their rules]</span>.
+
+Include: required field validation, data type checks, min/max length, special characters, duplicate checks, and successful submission scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 76 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">CRUD Operations Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write test cases for CRUD operations (Create, Read, Update, Delete) for the <span class="placeholder">[entity/object name]</span> module.
+
+Cover: creating with valid/invalid data, reading with filters/search/sort/pagination, updating individual and bulk records, soft vs hard delete, and permission-based access for roles: <span class="placeholder">[list roles]</span>.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 65 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Search & Filter Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create test cases for the search and filter functionality in <span class="placeholder">[module/page name]</span>.
+
+Include: keyword search (exact, partial, case-insensitive), special characters, empty search, filter combinations, sort order, results count, pagination, and no-results state.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 54 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">End-to-End Workflow Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate end-to-end test scenarios for the following business workflow:
+
+Workflow: <span class="placeholder">[describe the workflow step by step]</span>
+User Roles Involved: <span class="placeholder">[list roles]</span>
+
+Cover the complete happy path, all decision points and branches, rollback/cancellation scenarios, and cross-role interactions.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 43 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional uat">
+        <div class="card-top">
+          <div>
+            <div class="card-title">UAT Test Cases from Requirements</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+              <span class="tag tag-uat">UAT</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create UAT (User Acceptance Testing) test cases based on these business requirements:
+
+Requirements: <span class="placeholder">[paste requirements]</span>
+
+Write from a business user perspective. Include business scenario, steps a real user would take, expected business outcome, and pass/fail criteria. Avoid technical jargon.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 39 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 2: API -->
+  <div class="category-section" data-category="api">
+    <div class="category-header">
+      <span class="category-icon">🔌</span>
+      <h2>API Test Cases</h2>
+      <span class="category-count">6 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">REST API Test Cases</div>
+            <div class="card-tags"><span class="tag tag-api">API</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate REST API test cases for the following endpoint:
+
+Method: <span class="placeholder">[GET/POST/PUT/DELETE]</span>
+Endpoint: <span class="placeholder">[endpoint URL]</span>
+Request Body: <span class="placeholder">[fields and types]</span>
+Auth: <span class="placeholder">[Bearer token/API key/none]</span>
+
+Cover: valid request, missing required fields, invalid data types, unauthorized access, rate limiting, and expected response codes (200, 400, 401, 404, 500).</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 91 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Response Validation</div>
+            <div class="card-tags"><span class="tag tag-api">API</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create test cases to validate API responses for <span class="placeholder">[API name]</span>.
+
+Cover: status code verification, response body schema validation, required fields presence, data type checks, response time SLA (<span class="placeholder">[e.g. under 2 seconds]</span>), pagination structure, and error message format consistency.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 72 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Authentication Testing</div>
+            <div class="card-tags"><span class="tag tag-api">API</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write test cases for API authentication and authorization for <span class="placeholder">[API/service name]</span> using <span class="placeholder">[auth type: OAuth2/JWT/API Key]</span>.
+
+Include: valid token, expired token, malformed token, missing token, insufficient permissions, token refresh flow, and concurrent session handling.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 58 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Chaining / Integration Tests</div>
+            <div class="card-tags"><span class="tag tag-api">API</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create integration test scenarios that chain multiple API calls for the following workflow:
+
+Workflow: <span class="placeholder">[e.g. Create User → Assign Role → Send Welcome Email → Verify Account]</span>
+
+Show how output from one API becomes input to the next. Include data dependency mapping and rollback if intermediate step fails.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 44 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Contract Testing</div>
+            <div class="card-tags"><span class="tag tag-api">API</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate API contract test cases for <span class="placeholder">[API name]</span> based on this contract/schema: <span class="placeholder">[paste OpenAPI/Swagger spec or describe the contract]</span>.
+
+Verify: all required fields are present in responses, no undocumented fields appear, data types match contract exactly, and breaking changes are detected.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 33 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api perf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Load & Performance Tests</div>
+            <div class="card-tags">
+              <span class="tag tag-api">API</span>
+              <span class="tag tag-perf">Performance</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Design performance test scenarios for <span class="placeholder">[API endpoint]</span>.
+
+Include: baseline response time test, load test with <span class="placeholder">[N]</span> concurrent users, stress test to find breaking point, spike test, and endurance test over <span class="placeholder">[duration]</span>. Define pass/fail SLA thresholds for each.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 28 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 3: REGRESSION -->
+  <div class="category-section" data-category="regression">
+    <div class="category-header">
+      <span class="category-icon">🔁</span>
+      <h2>Regression & Smoke Testing</h2>
+      <span class="category-count">5 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="regression smoke web">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Regression Impact Analysis</div>
+            <div class="card-tags">
+              <span class="tag tag-regression">Regression</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Analyze the following code/feature changes and identify which existing test cases need to be re-run for regression:
+
+Changes made: <span class="placeholder">[describe what was changed/added/removed]</span>
+Existing modules: <span class="placeholder">[list main modules of the application]</span>
+
+List: directly impacted areas, indirectly impacted areas, high-risk regression zones, and recommended test priority order.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 82 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="smoke web regression">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Smoke Test Checklist</div>
+            <div class="card-tags">
+              <span class="tag tag-smoke">Smoke</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create a smoke test checklist for <span class="placeholder">[application name]</span> after a new deployment.
+
+Include: application launch/load check, critical login flows, core navigation, key feature availability (<span class="placeholder">[list 3-5 key features]</span>), and basic data operations. Each check should take under 2 minutes to execute.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 69 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="regression">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Full Regression Suite Design</div>
+            <div class="card-tags">
+              <span class="tag tag-regression">Regression</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Design a regression test suite for <span class="placeholder">[application name]</span> with modules: <span class="placeholder">[list modules]</span>.
+
+Organize into: P1 (must run every release), P2 (run for major releases), P3 (monthly). For each priority level, list the critical test scenarios. Also suggest automation candidates and manual-only tests.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 47 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="regression">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Release Regression Checklist</div>
+            <div class="card-tags">
+              <span class="tag tag-regression">Regression</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate a release regression checklist for version <span class="placeholder">[version number]</span> of <span class="placeholder">[application]</span>.
+
+New features in this release: <span class="placeholder">[list new features]</span>
+Bug fixes: <span class="placeholder">[list bug fixes]</span>
+
+Create a structured checklist covering new feature validation, bug fix verification, and regression on related areas.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 38 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="regression smoke">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Sanity vs Regression Decision</div>
+            <div class="card-tags">
+              <span class="tag tag-regression">Regression</span>
+              <span class="tag tag-smoke">Smoke</span>
+            </div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Given this change: <span class="placeholder">[describe the bug fix or small change]</span>, help me decide:
+
+1. Is smoke testing, sanity testing, or full regression needed?
+2. Which specific test cases should I run?
+3. What is the minimum test set to verify this change is safe?
+
+Provide a rationale for your recommendation.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 31 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 4: SALESFORCE -->
+  <div class="category-section" data-category="sf">
+    <div class="category-header">
+      <span class="category-icon">☁️</span>
+      <h2>Salesforce QA</h2>
+      <span class="category-count">6 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="sf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Salesforce Feature Test Cases</div>
+            <div class="card-tags"><span class="tag tag-sf">Salesforce</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate test cases for the following Salesforce feature:
+
+Feature: <span class="placeholder">[feature name]</span>
+Object(s): <span class="placeholder">[e.g. Account, Contact, Opportunity]</span>
+User Profiles: <span class="placeholder">[e.g. Sales Rep, Manager, Admin]</span>
+
+Cover: field validation, required fields, picklist values, record creation/editing, page layout per profile, and sharing/visibility rules.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 77 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="sf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Salesforce Flow Testing</div>
+            <div class="card-tags"><span class="tag tag-sf">Salesforce</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create test scenarios for the following Salesforce Flow:
+
+Flow Name: <span class="placeholder">[flow name]</span>
+Flow Type: <span class="placeholder">[Screen Flow/Auto-launched/Scheduled]</span>
+Trigger: <span class="placeholder">[what triggers this flow]</span>
+Purpose: <span class="placeholder">[what it does]</span>
+
+Cover: all entry conditions, each decision branch, fault paths, bulkification (200+ records), and expected outcome per scenario.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 63 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="sf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Apex Trigger Test Coverage</div>
+            <div class="card-tags"><span class="tag tag-sf">Salesforce</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Review this Apex trigger and generate test scenarios to achieve 100% coverage:
+
+<span class="placeholder">[paste trigger code]</span>
+
+Include: before insert, before update, after insert, after update, delete scenarios, bulk test with 200 records, governor limit edge cases, and exception handling paths.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 52 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="sf regression">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Salesforce Release Regression</div>
+            <div class="card-tags">
+              <span class="tag tag-sf">Salesforce</span>
+              <span class="tag tag-regression">Regression</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create a regression test plan for a Salesforce org release.
+
+Components changed: <span class="placeholder">[list Apex classes, Flows, Objects, Profiles, etc.]</span>
+Release type: <span class="placeholder">[Major/Minor/Hotfix]</span>
+
+Identify downstream impacts across objects, automations, integrations, and reports. Provide a prioritized test execution order.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 41 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="sf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">LWC Component Test Cases</div>
+            <div class="card-tags"><span class="tag tag-sf">Salesforce</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write test scenarios for this Lightning Web Component:
+
+Component Name: <span class="placeholder">[component name]</span>
+Purpose: <span class="placeholder">[what it does]</span>
+Wire Adapters Used: <span class="placeholder">[e.g. getRecord, getRelatedListRecords]</span>
+
+Cover: data loading states, empty state, error state, user interactions, event firing, and record update handling.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 35 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="sf security">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Salesforce Security & Access Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-sf">Salesforce</span>
+              <span class="tag tag-security">Security</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate security test cases for Salesforce object: <span class="placeholder">[Object Name]</span>.
+
+Profiles to test: <span class="placeholder">[list profiles]</span>
+
+Cover: field-level security per profile, object-level permissions, record sharing rules, role hierarchy access, public group access, and API access bypass scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 29 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 5: NEGATIVE & BOUNDARY -->
+  <div class="category-section" data-category="negative">
+    <div class="category-header">
+      <span class="category-icon">⚠️</span>
+      <h2>Negative & Boundary Value Testing</h2>
+      <span class="category-count">5 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Negative Test Cases</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate negative test cases for <span class="placeholder">[feature/form name]</span>.
+
+Cover: invalid inputs for each field, missing required data, wrong data types, SQL injection attempts, XSS inputs, oversized data, expired sessions, unauthorized access attempts, and network failure scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 88 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Boundary Value Analysis</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Apply Boundary Value Analysis (BVA) to the following fields:
+
+<span class="placeholder">[Field 1]: min=X, max=Y
+[Field 2]: min=A, max=B</span>
+
+For each field generate: below minimum, at minimum, just above minimum, just below maximum, at maximum, above maximum test values. Show expected result for each.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 67 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Equivalence Partitioning</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Apply Equivalence Partitioning to design test cases for <span class="placeholder">[input field or feature]</span>.
+
+Rules: <span class="placeholder">[describe validation rules]</span>
+
+Identify all valid and invalid equivalence classes, select one representative value per class, and create a test case for each partition. Show the partition, test value, and expected result.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 55 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Error Message Validation</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create test cases to validate error messages for <span class="placeholder">[form/feature name]</span>.
+
+For each error scenario verify: error message appears at correct location, message text is clear and user-friendly, message disappears when error is corrected, multiple errors display simultaneously (if applicable), and no technical/stack trace info is exposed.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 44 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional mobile">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Edge Case Discovery</div>
+            <div class="card-tags">
+              <span class="tag tag-web">Web</span>
+              <span class="tag tag-mobile">Mobile</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Identify all possible edge cases for <span class="placeholder">[feature description]</span>.
+
+Think about: concurrent users doing the same action, race conditions, data at extreme limits, special characters in all languages (Unicode), slow network conditions, session expiry mid-action, browser back button misuse, and copy-paste attacks. Generate a test case for each edge case found.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 61 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 6: SECURITY -->
+  <div class="category-section" data-category="security">
+    <div class="category-header">
+      <span class="category-icon">🔒</span>
+      <h2>Security Test Cases</h2>
+      <span class="category-count">5 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="security web">
+        <div class="card-top">
+          <div>
+            <div class="card-title">OWASP Top 10 Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-security">Security</span>
+              <span class="tag tag-web">Web</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate security test cases for <span class="placeholder">[application name]</span> based on OWASP Top 10.
+
+Cover: SQL Injection, XSS, broken authentication, sensitive data exposure, insecure direct object reference, security misconfiguration, and CSRF. For each: describe the attack vector, test steps to attempt it, and expected secure behavior.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 49 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="security web">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Input Sanitization Tests</div>
+            <div class="card-tags">
+              <span class="tag tag-security">Security</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create input sanitization test cases for all text inputs in <span class="placeholder">[feature/page name]</span>.
+
+Test with: SQL injection strings, HTML/JS script tags, null bytes, path traversal sequences (../), excessively long strings, Unicode special chars, and emoji. Verify: input is rejected or sanitized, no script execution, and no data leakage.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 38 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="security web">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Role-Based Access Control Tests</div>
+            <div class="card-tags">
+              <span class="tag tag-security">Security</span>
+            </div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate RBAC (Role-Based Access Control) test cases for <span class="placeholder">[application]</span>.
+
+Roles: <span class="placeholder">[list roles and their expected permissions]</span>
+
+For each role verify: accessible pages/features, restricted pages/features return 403, URL manipulation to access unauthorized pages, API endpoint access per role, and data visibility restrictions.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 45 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="security api">
+        <div class="card-top">
+          <div>
+            <div class="card-title">API Security Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-security">Security</span>
+              <span class="tag tag-api">API</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write security-focused test cases for the <span class="placeholder">[API name]</span> API.
+
+Cover: authentication bypass attempts, horizontal privilege escalation (accessing other users' data), mass assignment vulnerabilities, sensitive data in responses (PII/tokens), HTTP method overriding, and verbose error messages exposing internals.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 32 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="security web">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Data Privacy & GDPR Tests</div>
+            <div class="card-tags">
+              <span class="tag tag-security">Security</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create test cases to validate data privacy compliance for <span class="placeholder">[application/feature]</span>.
+
+Cover: PII data masking in UI and logs, data export/download restrictions, right to erasure (delete personal data), consent management, data retention policy enforcement, and sensitive data encryption at rest and in transit.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 27 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 7: BDD -->
+  <div class="category-section" data-category="bdd">
+    <div class="category-header">
+      <span class="category-icon">🥒</span>
+      <h2>BDD / Gherkin Format</h2>
+      <span class="category-count">4 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Feature File Generation</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write a BDD feature file in Gherkin format for: <span class="placeholder">[feature description]</span>
+
+Include: Feature description, Background (if shared preconditions exist), at least 5 Scenarios covering happy path and key negative cases, Scenario Outline with Examples table for data-driven scenarios.
+
+Format each step to be implementation-independent and business-readable.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 71 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="api web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Convert Test Cases to BDD</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Convert the following test cases to BDD Gherkin format:
+
+<span class="placeholder">[paste your existing test cases]</span>
+
+For each test case create a proper Scenario with Given (preconditions), When (actions), Then (expected results). Group related scenarios under the same Feature. Use Scenario Outline where multiple data sets are tested.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 59 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Acceptance Criteria to BDD</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-basic">Basic</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Convert these acceptance criteria to BDD scenarios:
+
+Story: <span class="placeholder">[user story]</span>
+Acceptance Criteria:
+<span class="placeholder">- AC1: ...
+- AC2: ...
+- AC3: ...</span>
+
+Write one or more Gherkin scenarios per acceptance criterion. Ensure scenarios are atomic, independently runnable, and use concrete data examples in the steps.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 48 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="web functional">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Step Definitions Guide</div>
+            <div class="card-tags"><span class="tag tag-web">Web</span></div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Given this Gherkin feature file: <span class="placeholder">[paste feature file]</span>
+
+Generate step definition method signatures in <span class="placeholder">[Java/Python/JavaScript]</span> for each unique step. Include: method signature, parameter extraction from steps, and a brief comment on what each step should implement. Do not write implementation code — just the structure.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 36 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 8: MOBILE -->
+  <div class="category-section" data-category="mobile">
+    <div class="category-header">
+      <span class="category-icon">📱</span>
+      <h2>Mobile App Testing</h2>
+      <span class="category-count">4 prompts</span>
+    </div>
+    <div class="prompts-grid">
+
+      <div class="prompt-card" data-tags="mobile">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Mobile Functional Test Cases</div>
+            <div class="card-tags"><span class="tag tag-mobile">Mobile</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Generate test cases for the <span class="placeholder">[feature name]</span> feature in a mobile app (<span class="placeholder">[iOS/Android/Both]</span>).
+
+Include platform-specific tests: gestures (swipe, pinch, tap), device rotation, keyboard behavior, push notifications, background/foreground transitions, and low battery/storage scenarios.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 53 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="mobile">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Mobile Compatibility Matrix</div>
+            <div class="card-tags"><span class="tag tag-mobile">Mobile</span></div>
+          </div>
+          <span class="difficulty diff-intermediate">Intermediate</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create a device and OS compatibility test matrix for <span class="placeholder">[app name]</span>.
+
+Target OS versions: <span class="placeholder">[e.g. iOS 15-17, Android 11-14]</span>
+
+Generate test cases for: UI rendering on different screen sizes, OS-specific behavior differences, older OS degradation, notch/dynamic island handling, and accessibility feature compatibility.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 41 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="mobile perf">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Mobile Network & Offline Testing</div>
+            <div class="card-tags">
+              <span class="tag tag-mobile">Mobile</span>
+              <span class="tag tag-perf">Performance</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Write test cases for network and offline behavior of <span class="placeholder">[app name]</span>.
+
+Cover: 4G/5G/WiFi/3G/2G performance, switching between network types mid-action, complete offline mode functionality, data sync when connectivity resumes, timeout handling, and cached vs fresh data behavior.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 35 times</span>
+        </div>
+      </div>
+
+      <div class="prompt-card" data-tags="mobile security">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Mobile Security Test Cases</div>
+            <div class="card-tags">
+              <span class="tag tag-mobile">Mobile</span>
+              <span class="tag tag-security">Security</span>
+            </div>
+          </div>
+          <span class="difficulty diff-advanced">Advanced</span>
+        </div>
+        <div class="prompt-body">
+          <div class="prompt-text">Create security test cases for mobile app <span class="placeholder">[app name]</span>.
+
+Cover: biometric authentication bypass, app data in screenshots, sensitive data in local storage/keychain, certificate pinning, deep link validation, clipboard data leakage, and app behavior after device is rooted/jailbroken.</div>
+        </div>
+        <div class="card-footer">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+            <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+          </div>
+          <span class="use-count">Used 28 times</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  </div><!-- end promptsContainer -->
+
+  <div class="no-results" id="noResults">
+    <div class="icon">🔍</div>
+    <p>No prompts found. Try a different search term.</p>
+  </div>
+
+  <!-- CHEAT SHEET -->
+  <div class="section-divider">
+    <h2>Quick Prompt Modifiers</h2>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="cheatsheet">
+    <div class="cheatsheet-header">⚡ Add these to any prompt to improve output</div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Output Format</div>
+      <div class="cs-value"><span>"Format output as a table with columns: Test ID, Title, Steps, Expected Result, Priority"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Format output as a table with columns: Test ID, Title, Steps, Expected Result, Priority')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">BDD Format</div>
+      <div class="cs-value"><span>"Write in BDD Gherkin format with Given/When/Then structure"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Write in BDD Gherkin format with Given/When/Then structure')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Priority Labels</div>
+      <div class="cs-value"><span>"Label each test case as High, Medium, or Low priority with justification"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Label each test case as High, Medium, or Low priority with justification')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">More Detail</div>
+      <div class="cs-value"><span>"Include detailed step-by-step instructions so a junior tester can execute without guidance"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Include detailed step-by-step instructions so a junior tester can execute without guidance')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Edge Cases</div>
+      <div class="cs-value"><span>"Include at least 5 edge cases and boundary value scenarios"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Include at least 5 edge cases and boundary value scenarios')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Automation Flag</div>
+      <div class="cs-value"><span>"Mark each test case as Automatable or Manual-only with a reason"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Mark each test case as Automatable or Manual-only with a reason')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Test Data</div>
+      <div class="cs-value"><span>"Include sample test data values for each test case"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Include sample test data values for each test case')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Risk Focus</div>
+      <div class="cs-value"><span>"Focus on high-risk areas first. Identify which scenarios would cause most damage if they failed in production"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Focus on high-risk areas first. Identify which scenarios would cause most damage if they failed in production')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Count Control</div>
+      <div class="cs-value"><span>"Generate exactly 15 test cases — no more, no less"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Generate exactly 15 test cases — no more, no less')">Copy</button></div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cs-label">Role Context</div>
+      <div class="cs-value"><span>"Act as a senior QA engineer with 10 years of experience in enterprise software testing"</span><button class="cs-copy" onclick="csQuickCopy(this, 'Act as a senior QA engineer with 10 years of experience in enterprise software testing')">Copy</button></div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section-divider">
+    <h2>Tips for Better AI Prompting in QA</h2>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🎯</div>
+      <h4>Be Specific</h4>
+      <p>The more context you provide (app type, user roles, existing rules), the better the test cases. Replace every <code style="color:#58a6ff">[placeholder]</code> with real details.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <h4>Chain Prompts</h4>
+      <p>Start with a basic set, then follow up: "Now add 5 more negative scenarios" or "Convert these to BDD format" to build on the first response.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📋</div>
+      <h4>Paste Your Specs</h4>
+      <p>Always paste the actual requirement, user story, or UI description into the prompt. AI performs significantly better with real context than abstract descriptions.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔄</div>
+      <h4>Iterate & Refine</h4>
+      <p>If output isn't quite right, say: "The test cases are too generic — make them specific to a B2B SaaS with multi-tenant data isolation." Keep refining.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🧩</div>
+      <h4>Use Role Priming</h4>
+      <p>Start with: "Act as a senior QA engineer..." to get more professional, structured output that mirrors real QA thinking patterns.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📊</div>
+      <h4>Request Formats</h4>
+      <p>Always specify output format: table, BDD, JSON, CSV. AI defaults to plain text — specifying format saves you reformatting time later.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<footer>
+  <p>QA Prompt Library — Works with <span>Claude, ChatGPT, Gemini, Copilot</span> and any AI tool</p>
+  <p style="margin-top:6px;font-size:0.8rem">Replace all <span>[placeholders]</span> with your actual feature details before using</p>
+</footer>
+
+<script>
+  let copyCounter = parseInt(localStorage.getItem('copyCount') || '0');
+  let favorites = JSON.parse(localStorage.getItem('qa_favorites') || '[]');
+
+  function updateStats() {
+    document.getElementById('copyCount').textContent = copyCounter;
+    document.getElementById('favCount').textContent = favorites.length;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg || 'Copied to clipboard!';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function copyPrompt(btn) {
+    const text = btn.closest('.prompt-card').querySelector('.prompt-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      copyCounter++;
+      localStorage.setItem('copyCount', copyCounter);
+      updateStats();
+      showToast('Prompt copied!');
+    });
+  }
+
+  function csQuickCopy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓';
+      setTimeout(() => btn.textContent = orig, 2000);
+      showToast('Modifier copied!');
+    });
+  }
+
+  function copyGenerated(btn) {
+    const text = document.getElementById('generatedPrompt').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.innerHTML = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 Copy Prompt'; btn.classList.remove('copied'); }, 2000);
+      showToast('Custom prompt copied!');
+    });
+  }
+
+  function toggleFav(btn) {
+    const card = btn.closest('.prompt-card');
+    const title = card.querySelector('.card-title').textContent;
+    btn.classList.toggle('active');
+    btn.textContent = btn.classList.contains('active') ? '★' : '☆';
+    if (btn.classList.contains('active')) {
+      favorites.push(title);
+      showToast('Added to favorites ★');
+    } else {
+      favorites = favorites.filter(f => f !== title);
+    }
+    localStorage.setItem('qa_favorites', JSON.stringify(favorites));
+    updateStats();
+  }
+
+  function filterByTag(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('.prompt-card');
+    let visible = 0;
+    cards.forEach(card => {
+      if (tag === 'all' || card.dataset.tags.includes(tag)) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    updateCategoryVisibility();
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function showFavorites(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('.prompt-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title').textContent;
+      if (favorites.includes(title)) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    updateCategoryVisibility();
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function filterPrompts(query) {
+    const q = query.toLowerCase();
+    const cards = document.querySelectorAll('.prompt-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      if (text.includes(q)) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    updateCategoryVisibility();
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function updateCategoryVisibility() {
+    document.querySelectorAll('.category-section').forEach(section => {
+      const visible = [...section.querySelectorAll('.prompt-card')].some(c => c.style.display !== 'none');
+      section.style.display = visible ? '' : 'none';
+    });
+  }
+
+  function buildPrompt() {
+    const feature = document.getElementById('b_feature').value || '[feature name]';
+    const app = document.getElementById('b_app').value;
+    const type = document.getElementById('b_type').value;
+    const format = document.getElementById('b_format').value;
+    const focus = document.getElementById('b_focus').value;
+    const count = document.getElementById('b_count').value;
+    const context = document.getElementById('b_context').value;
+
+    let prompt = `Act as a senior QA engineer. Generate ${count} ${type} for the "${feature}" feature of a ${app}.\n\n`;
+    prompt += `Output format: ${format}.\n\n`;
+    if (focus) prompt += `Special focus: ${focus}.\n\n`;
+    if (context) prompt += `Additional context:\n${context}\n\n`;
+    prompt += `Requirements:\n`;
+    prompt += `- Cover positive (happy path) scenarios\n`;
+    prompt += `- Cover negative and edge case scenarios\n`;
+    prompt += `- Include boundary value scenarios where applicable\n`;
+    prompt += `- Label each test case with priority: High / Medium / Low\n`;
+    prompt += `- Each test case must have: Test ID, Title, Preconditions, Steps, Expected Result`;
+
+    document.getElementById('generatedPrompt').textContent = prompt;
+  }
+
+  updateStats();
+</script>
+</body>
+</html>
