@@ -525,15 +525,413 @@
 
     .no-results .icon { font-size: 3rem; margin-bottom: 12px; }
 
+    /* SESSION BANNER */
+    .session-banner {
+      background: linear-gradient(135deg, #0d2137, #1f6feb33);
+      border-bottom: 2px solid #1f6feb;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .session-banner .sb-left { display: flex; align-items: center; gap: 12px; }
+    .session-banner .sb-icon { font-size: 1.5rem; }
+    .session-banner .sb-text h3 { color: #58a6ff; font-size: 0.95rem; margin-bottom: 2px; }
+    .session-banner .sb-text p { color: #8b949e; font-size: 0.78rem; }
+
+    .session-banner .sb-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .session-btn {
+      background: #1f6feb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .session-btn:hover { background: #388bfd; transform: scale(1.03); }
+
+    .dismiss-btn {
+      background: none;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #8b949e;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dismiss-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+
+    .agenda-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .agenda-pill {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.72rem;
+      color: #8b949e;
+    }
+
+    .agenda-pill.current { border-color: #1f6feb; color: #58a6ff; }
+
+    /* QUICK START */
+    .quickstart-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .quickstart-section h2 { color: #58a6ff; font-size: 1.15rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+    .qs-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .qs-step {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .qs-step:hover { border-color: #1f6feb; }
+
+    .qs-num {
+      width: 32px; height: 32px;
+      background: #1f6feb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #fff;
+      margin: 0 auto 12px;
+    }
+
+    .qs-step .qs-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .qs-step h4 { color: #f0f6fc; font-size: 0.9rem; margin-bottom: 6px; }
+    .qs-step p { color: #8b949e; font-size: 0.78rem; line-height: 1.5; }
+
+    .qs-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f6feb;
+      font-size: 1.4rem;
+      padding-top: 20px;
+    }
+
+    /* DECISION GUIDE */
+    .decision-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .decision-section h2 { color: #58a6ff; font-size: 1.15rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+    .decision-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #21262d;
+    }
+
+    .decision-table th {
+      background: #1f2937;
+      color: #58a6ff;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .decision-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #21262d;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+    }
+
+    .decision-table tr:last-child td { border-bottom: none; }
+    .decision-table tr:hover td { background: #1c2128; }
+
+    .decision-table .d-cat {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* LIVE DEMO */
+    .demo-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .demo-section h2 { color: #58a6ff; font-size: 1.15rem; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .demo-section .demo-subtitle { color: #8b949e; font-size: 0.85rem; margin-bottom: 24px; }
+
+    .demo-card {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .demo-card-header {
+      background: #1f2937;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .demo-card-header h4 { color: #f0f6fc; font-size: 0.9rem; }
+    .demo-label {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .label-bad { background: #2d1b1b; color: #fca5a5; }
+    .label-good { background: #1a2e1a; color: #86efac; }
+    .label-output { background: #1e2e3a; color: #7dd3fc; }
+
+    .demo-body { padding: 16px 18px; }
+
+    .demo-prompt-bad {
+      background: #1a0a0a;
+      border: 1px solid #7f1d1d44;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .demo-prompt-good {
+      background: #0a1a0a;
+      border: 1px solid #16653444;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #86efac;
+      white-space: pre-wrap;
+    }
+
+    .demo-output {
+      background: #0a1020;
+      border: 1px solid #1f6feb44;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      color: #c9d1d9;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .demo-arrow {
+      text-align: center;
+      color: #1f6feb;
+      font-size: 1.4rem;
+      padding: 6px 0;
+    }
+
+    /* EXERCISES */
+    .exercises-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .exercises-section h2 { color: #58a6ff; font-size: 1.15rem; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .exercises-section .ex-subtitle { color: #8b949e; font-size: 0.85rem; margin-bottom: 24px; }
+
+    .exercise-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .exercise-card {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 22px;
+      transition: border-color 0.2s;
+    }
+
+    .exercise-card:hover { border-color: #1f6feb; }
+
+    .ex-num {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #1f6feb, #58a6ff);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 14px;
+    }
+
+    .exercise-card h4 { color: #f0f6fc; font-size: 0.95rem; margin-bottom: 8px; }
+    .exercise-card .ex-time { color: #484f58; font-size: 0.75rem; margin-bottom: 10px; }
+
+    .ex-steps { list-style: none; padding: 0; }
+    .ex-steps li {
+      color: #8b949e;
+      font-size: 0.82rem;
+      padding: 5px 0;
+      border-bottom: 1px solid #1c2128;
+      display: flex;
+      gap: 8px;
+    }
+
+    .ex-steps li:last-child { border-bottom: none; }
+    .ex-steps li::before { content: counter(step); counter-increment: step; color: #1f6feb; font-weight: bold; font-size: 0.75rem; flex-shrink: 0; min-width: 16px; }
+    .ex-steps { counter-reset: step; }
+
+    .ex-done-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #8b949e;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: 14px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .ex-done-btn:hover { background: #238636; border-color: #238636; color: #fff; }
+    .ex-done-btn.done { background: #238636; border-color: #238636; color: #fff; }
+
+    /* SUMMARY */
+    .summary-section {
+      background: linear-gradient(135deg, #0d2137, #161b22);
+      border: 1px solid #1f6feb44;
+      border-radius: 14px;
+      padding: 36px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .summary-section h2 { color: #58a6ff; font-size: 1.3rem; margin-bottom: 24px; }
+
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .takeaway {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .takeaway .t-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .takeaway p { color: #c9d1d9; font-size: 0.85rem; line-height: 1.5; }
+
+    .qr-placeholder {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: #0d1117;
+      border: 2px dashed #30363d;
+      border-radius: 12px;
+      padding: 20px 30px;
+      color: #484f58;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+
+    .qr-box {
+      width: 80px; height: 80px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    /* STEP HIGHLIGHT for guided mode */
+    .step-highlight {
+      box-shadow: 0 0 0 3px #1f6feb, 0 0 20px rgba(31,111,235,0.3) !important;
+      border-color: #1f6feb !important;
+    }
+
     @media (max-width: 600px) {
       header h1 { font-size: 1.6rem; }
       .prompts-grid { grid-template-columns: 1fr; }
       .cheatsheet-row { grid-template-columns: 1fr; }
       .cs-label { border-right: none; border-bottom: 1px solid #21262d; }
+      .qs-arrow { display: none; }
     }
   </style>
 </head>
 <body>
+
+<!-- SESSION BANNER -->
+<div class="session-banner" id="sessionBanner">
+  <div class="sb-left">
+    <span class="sb-icon">🎓</span>
+    <div class="sb-text">
+      <h3>Training Session — QA Prompt Library</h3>
+      <div class="agenda-pills">
+        <span class="agenda-pill current">1. Intro</span>
+        <span class="agenda-pill">2. Live Demo</span>
+        <span class="agenda-pill">3. Explore Library</span>
+        <span class="agenda-pill">4. Hands-On Exercises</span>
+        <span class="agenda-pill">5. Q&A</span>
+      </div>
+    </div>
+  </div>
+  <div class="sb-right">
+    <button class="session-btn" onclick="startSession()">▶ Start Guided Session</button>
+    <button class="dismiss-btn" onclick="document.getElementById('sessionBanner').style.display='none'">Dismiss</button>
+  </div>
+</div>
 
 <!-- HEADER -->
 <header>
@@ -552,6 +950,8 @@
 <!-- TOOLBAR -->
 <div class="toolbar">
   <input class="search-box" type="text" placeholder="Search prompts..." oninput="filterPrompts(this.value)" id="searchBox"/>
+  <button class="filter-btn" style="background:#1f6feb;border-color:#1f6feb;color:#fff" onclick="document.getElementById('section-demo').scrollIntoView({behavior:'smooth'})">🎬 Demo</button>
+  <button class="filter-btn" onclick="document.getElementById('section-exercises').scrollIntoView({behavior:'smooth'})">💪 Exercises</button>
   <button class="filter-btn active" onclick="filterByTag('all', this)">All</button>
   <button class="filter-btn" onclick="filterByTag('web', this)">Web</button>
   <button class="filter-btn" onclick="filterByTag('api', this)">API</button>
@@ -571,6 +971,223 @@
 </div>
 
 <div class="container">
+
+  <!-- QUICK START -->
+  <div class="quickstart-section" id="section-intro">
+    <h2>🚀 How to Use This Library</h2>
+    <div class="qs-steps">
+      <div class="qs-step">
+        <div class="qs-num">1</div>
+        <div class="qs-icon">🗂️</div>
+        <h4>Choose a Category</h4>
+        <p>Pick the right category — Functional, API, Regression, Salesforce, Security, BDD, or Mobile.</p>
+      </div>
+      <div class="qs-arrow">→</div>
+      <div class="qs-step">
+        <div class="qs-num">2</div>
+        <div class="qs-icon">✏️</div>
+        <h4>Fill the Placeholders</h4>
+        <p>Replace every <span style="color:#58a6ff;background:#1f3a5f;padding:1px 6px;border-radius:4px;font-size:0.78rem">[placeholder]</span> with your real feature, app name, or requirements.</p>
+      </div>
+      <div class="qs-arrow">→</div>
+      <div class="qs-step">
+        <div class="qs-num">3</div>
+        <div class="qs-icon">📋</div>
+        <h4>Copy & Paste into AI</h4>
+        <p>Click the Copy button, paste into Claude, ChatGPT, Gemini, or Copilot and send.</p>
+      </div>
+      <div class="qs-arrow">→</div>
+      <div class="qs-step">
+        <div class="qs-num">4</div>
+        <div class="qs-icon">🔁</div>
+        <h4>Refine & Iterate</h4>
+        <p>Follow up with "add 5 more edge cases" or "convert to BDD format" to improve the output.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISION GUIDE -->
+  <div class="decision-section" id="section-decision">
+    <h2>🧭 Which Category Should I Use?</h2>
+    <table class="decision-table">
+      <thead>
+        <tr>
+          <th>I need to test...</th>
+          <th>Use this Category</th>
+          <th>Example Scenario</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>A user story or new feature</td><td><span class="d-cat tag-web">Functional</span></td><td>Login page, Registration form, Dashboard</td></tr>
+        <tr><td>A REST or SOAP API endpoint</td><td><span class="d-cat tag-api">API Testing</span></td><td>POST /api/orders, GET /users/{id}</td></tr>
+        <tr><td>After a code change or bug fix</td><td><span class="d-cat tag-regression">Regression</span></td><td>Release 2.5, hotfix deployment</td></tr>
+        <tr><td>A Salesforce feature or Flow</td><td><span class="d-cat tag-sf">Salesforce QA</span></td><td>Opportunity Flow, Account Trigger, LWC</td></tr>
+        <tr><td>Boundary values and invalid inputs</td><td><span class="d-cat tag-web">Negative / Boundary</span></td><td>Age field 0–120, name max 50 chars</td></tr>
+        <tr><td>Security vulnerabilities</td><td><span class="d-cat tag-security">Security</span></td><td>Login form, file upload, API auth</td></tr>
+        <tr><td>With Given/When/Then format</td><td><span class="d-cat tag-api">BDD / Gherkin</span></td><td>Cucumber, Behave, SpecFlow features</td></tr>
+        <tr><td>An iOS or Android app feature</td><td><span class="d-cat tag-mobile">Mobile</span></td><td>Push notifications, offline mode, gestures</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LIVE DEMO -->
+  <div class="demo-section" id="section-demo">
+    <h2>🎬 Live Demo — Prompt Before vs After</h2>
+    <p class="demo-subtitle">See how adding context transforms a vague prompt into one that generates professional test cases</p>
+
+    <!-- Demo 1 -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <h4>Demo 1 — Login Feature Test Cases</h4>
+      </div>
+      <div class="demo-body">
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">❌ BAD PROMPT</div>
+        <div class="demo-prompt-bad">Write test cases for login.</div>
+        <div class="demo-arrow">↓ Add context, structure, and format</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">✅ GOOD PROMPT</div>
+        <div class="demo-prompt-good">Generate 10 functional test cases for the Login feature of a Salesforce web application.
+
+The login supports: Email + Password, Google SSO, and OTP via email.
+User roles: Admin and Standard User.
+
+Format as a table: Test ID | Title | Preconditions | Steps | Expected Result | Priority
+
+Cover: happy path, invalid credentials, locked account, SSO flow, OTP expiry, and session timeout.</div>
+        <div class="demo-arrow">↓ AI Output</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">🤖 SAMPLE OUTPUT</div>
+        <div class="demo-output">| Test ID | Title                        | Preconditions         | Steps                              | Expected Result              | Priority |
+|---------|------------------------------|-----------------------|------------------------------------|------------------------------|----------|
+| TC001   | Valid login - Email+Password | User account exists   | 1. Go to login 2. Enter valid creds | Dashboard loads successfully | High     |
+| TC002   | Invalid password             | User account exists   | 1. Enter wrong password             | "Invalid credentials" error  | High     |
+| TC003   | Locked account login         | Account locked        | 1. Try to login                     | "Account locked" message     | High     |
+| TC004   | Google SSO login             | SSO configured        | 1. Click Google 2. Authenticate     | Redirected to dashboard      | High     |
+| TC005   | OTP login - valid OTP        | OTP sent to email     | 1. Enter correct OTP               | Login successful             | High     |
+...</div>
+      </div>
+    </div>
+
+    <!-- Demo 2 -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <h4>Demo 2 — API Test Cases</h4>
+      </div>
+      <div class="demo-body">
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">❌ BAD PROMPT</div>
+        <div class="demo-prompt-bad">Test the API.</div>
+        <div class="demo-arrow">↓ Add endpoint, method, auth, and coverage requirements</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">✅ GOOD PROMPT</div>
+        <div class="demo-prompt-good">Generate REST API test cases for:
+Method: POST
+Endpoint: /api/v1/accounts
+Auth: Bearer token
+Body: { "name": string (required), "type": enum["Customer","Partner"], "email": string }
+
+Cover: valid request (201), missing required fields (400), invalid enum value (422), no auth token (401), duplicate email (409), and server error simulation (500).</div>
+        <div class="demo-arrow">↓ AI Output</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">🤖 SAMPLE OUTPUT</div>
+        <div class="demo-output">TC-API-001: Create account with valid data → Expected: 201 Created, response has "id" field
+TC-API-002: Missing "name" field → Expected: 400 Bad Request, error message mentions "name required"
+TC-API-003: Invalid type value "Vendor" → Expected: 422 Unprocessable, error lists valid enum values
+TC-API-004: No Authorization header → Expected: 401 Unauthorized
+TC-API-005: Duplicate email address → Expected: 409 Conflict, "email already exists"
+...</div>
+      </div>
+    </div>
+
+    <!-- Demo 3 -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <h4>Demo 3 — BDD Gherkin Format</h4>
+      </div>
+      <div class="demo-body">
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">❌ BAD PROMPT</div>
+        <div class="demo-prompt-bad">Make BDD test cases for checkout.</div>
+        <div class="demo-arrow">↓ Specify the feature, format, and scenarios needed</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">✅ GOOD PROMPT</div>
+        <div class="demo-prompt-good">Write a BDD feature file in Gherkin format for the Checkout feature of an e-commerce web app.
+
+Include: successful checkout with card, checkout with empty cart, payment failure scenario, and applying a discount code.
+
+Use Scenario Outline with Examples table for the discount code scenarios.</div>
+        <div class="demo-arrow">↓ AI Output</div>
+        <div style="margin-bottom:6px;font-size:0.75rem;color:#484f58;letter-spacing:1px">🤖 SAMPLE OUTPUT</div>
+        <div class="demo-output">Feature: Checkout Process
+
+  Scenario: Successful checkout with valid card
+    Given the user has 2 items in their cart
+    When they proceed to checkout and enter valid card details
+    Then the order is confirmed and a confirmation email is sent
+
+  Scenario: Checkout with empty cart
+    Given the user has no items in their cart
+    When they navigate to the checkout page
+    Then they see "Your cart is empty" and a "Continue Shopping" button
+
+  Scenario Outline: Apply discount code
+    Given the user has items in cart totalling &lt;original_price&gt;
+    When they apply discount code "&lt;code&gt;"
+    Then the total should show &lt;discounted_price&gt;
+    Examples:
+      | code       | original_price | discounted_price |
+      | SAVE10     | $100           | $90              |
+      | WELCOME20  | $50            | $40              |</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="exercises-section" id="section-exercises">
+    <h2>💪 Hands-On Exercises</h2>
+    <p class="ex-subtitle">Try these exercises during the session — each takes 5–10 minutes</p>
+    <div class="exercise-cards">
+
+      <div class="exercise-card">
+        <div class="ex-num">1</div>
+        <h4>Use the Prompt Builder</h4>
+        <div class="ex-time">⏱ 5 minutes</div>
+        <ol class="ex-steps">
+          <li>Scroll down to the Custom Prompt Builder section</li>
+          <li>Enter "Login Page" as your feature name</li>
+          <li>Select "Salesforce Org" as app type</li>
+          <li>Choose "Functional Test Cases" and "Table Format"</li>
+          <li>Click Generate and copy the result</li>
+          <li>Paste into Claude or ChatGPT and run it</li>
+        </ol>
+        <button class="ex-done-btn" onclick="markDone(this)">Mark as Done ✓</button>
+      </div>
+
+      <div class="exercise-card">
+        <div class="ex-num">2</div>
+        <h4>BDD Prompt for Your Feature</h4>
+        <div class="ex-time">⏱ 7 minutes</div>
+        <ol class="ex-steps">
+          <li>Click the "BDD" filter button at the top</li>
+          <li>Find the "Feature File Generation" prompt</li>
+          <li>Copy it and replace [feature description] with a real feature you work on</li>
+          <li>Add context about your app type</li>
+          <li>Paste into any AI tool and review the output</li>
+          <li>Follow up: "Add 3 more negative scenarios"</li>
+        </ol>
+        <button class="ex-done-btn" onclick="markDone(this)">Mark as Done ✓</button>
+      </div>
+
+      <div class="exercise-card">
+        <div class="ex-num">3</div>
+        <h4>Regression Impact Analysis</h4>
+        <div class="ex-time">⏱ 8 minutes</div>
+        <ol class="ex-steps">
+          <li>Click "Regression" filter button</li>
+          <li>Find "Regression Impact Analysis" prompt</li>
+          <li>Replace [changes made] with a real recent change at your project</li>
+          <li>List your application's main modules</li>
+          <li>Copy and run in an AI tool</li>
+          <li>Discuss: Did the AI find impacts you hadn't considered?</li>
+        </ol>
+        <button class="ex-done-btn" onclick="markDone(this)">Mark as Done ✓</button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- PROMPT BUILDER -->
   <div class="builder-section">
@@ -1984,6 +2601,27 @@ Cover: biometric authentication bypass, app data in screenshots, sensitive data 
   </div>
 </div>
 
+<!-- SESSION SUMMARY -->
+<div class="container" style="padding-top:0" id="section-summary">
+  <div class="summary-section">
+    <h2>🎯 Session Key Takeaways</h2>
+    <div class="takeaways">
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>AI doesn't replace QA</strong> — it makes you faster. You still need domain knowledge to fill the placeholders and validate the output.</p></div>
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>Context is everything.</strong> The more detail you put in — app type, roles, rules — the better and more specific the test cases.</p></div>
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>Iterate, don't accept the first output.</strong> Follow up with "add edge cases", "make it negative", or "convert to BDD" to refine.</p></div>
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>Use the Prompt Builder</strong> for custom prompts tailored to your exact feature — no copy-editing needed.</p></div>
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>Works with any AI tool.</strong> Claude, ChatGPT, Gemini, Copilot — the same prompts work everywhere.</p></div>
+      <div class="takeaway"><span class="t-icon">✦</span><p><strong>Star your favorites</strong> to build your personal QA prompt toolkit for your team and project.</p></div>
+    </div>
+    <div style="margin-top:10px;color:#8b949e;font-size:0.88rem;margin-bottom:16px">Share this library with your team 👇</div>
+    <div class="qr-placeholder">
+      <div class="qr-box">📱</div>
+      <span>sonamvyas.github.io/my-guides-/qa-prompt-library.html</span>
+      <button onclick="navigator.clipboard.writeText('https://sonamvyas.github.io/my-guides-/qa-prompt-library.html').then(()=>this.textContent='✓ Copied!')" style="background:#1f6feb;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:0.8rem;cursor:pointer;margin-top:4px">Copy Link</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>QA Prompt Library — Works with <span>Claude, ChatGPT, Gemini, Copilot</span> and any AI tool</p>
   <p style="margin-top:6px;font-size:0.8rem">Replace all <span>[placeholders]</span> with your actual feature details before using</p>
@@ -2136,6 +2774,35 @@ Cover: biometric authentication bypass, app data in screenshots, sensitive data 
   }
 
   updateStats();
+
+  // Session guided flow
+  const sessionSections = ['section-intro','section-decision','section-demo','section-exercises','section-summary'];
+  const agendaPills = document.querySelectorAll('.agenda-pill');
+  let currentStep = 0;
+
+  function startSession() {
+    currentStep = 0;
+    scrollToSection(0);
+  }
+
+  function scrollToSection(idx) {
+    const el = document.getElementById(sessionSections[idx]);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.add('step-highlight');
+      setTimeout(() => el.classList.remove('step-highlight'), 2500);
+    }
+    agendaPills.forEach((p, i) => {
+      p.classList.toggle('current', i === idx);
+    });
+  }
+
+  function markDone(btn) {
+    btn.textContent = '✅ Completed!';
+    btn.classList.add('done');
+    btn.disabled = true;
+    currentStep = Math.min(currentStep + 1, sessionSections.length - 1);
+  }
 </script>
 </body>
 </html>
